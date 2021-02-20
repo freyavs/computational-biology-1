@@ -11,6 +11,7 @@ f.close()
 
 words = set([ word.upper() for word in words])
 
+
 def fix_args(f):
     def aangepast(*args, **kwargs):
         new_args = [ SeqRecord(Seq(arg)) if isinstance(arg, str) else arg for arg in args ]
@@ -40,7 +41,8 @@ def get_all_substring_combinations(s, l):
         substrings = (word[x:y] for x, y in combinations( 
             range(len(word) + 1), r = 2) if not abs(x-y) == 1)
         for w in substrings:
-            if w in words or w[::-1] in words: res.add(w)
+            if w in words: res.add(w)
+            if w[::-1] in words: res.add(w[::-1])  
     
     return get_all_letters(s, res)
 
@@ -63,7 +65,6 @@ for record in data:
 exit()
 
 combs = get_all_combinations("TESTBESTAND")
-print(combs)
 exit()
 
 
