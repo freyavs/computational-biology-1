@@ -1,0 +1,12 @@
+# splits woordenboek op in letters met en zonder de speciale letters
+for word in dictionary:
+    if re.match('^[A-Z]+$', word):
+        if re.search('[BZJUX]', word): 
+            words_trie.add(word)
+        elif re.search('[O]', word): 
+            orig_word = word
+            word = word.replace("O","X")
+            wildcard_mapping[word] = wildcard_mapping.get(word, []) + [(orig_word)]
+
+        else: 
+            words_hash.add(word)

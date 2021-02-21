@@ -5,15 +5,20 @@ class TrieNode:
     # Trie node class 
     def __init__(self): 
         self.children = [None]*26
-  
+        self.string = None 
         # isEndOfWord is True if node represent the end of the word 
         self.isEndOfWord = False
+        self.isleaf = False
   
 class Trie: 
       
     # Trie data structure class 
     def __init__(self): 
         self.root = self.getNode() 
+        self.search_nodes = [ [self.root], [self.root] ]
+
+    def reset(self):
+        self.search_nodes = [ [self.root], [self.root] ]
   
     def getNode(self): 
       
@@ -25,10 +30,10 @@ class Trie:
         # private helper function 
         # Converts key current character into index 
         # use only 'a' through 'z' and lower case 
-        if ch == 'J':
-            return ord('I') - ord('A')
-        if ch == 'U': 
-            return ord('V') - ord('A')
+        #if ch == 'J':
+            #return ord('I') - ord('A')
+        #if ch == 'U': 
+            #return ord('V') - ord('A')
 
         return ord(ch)-ord('A') 
   
@@ -49,7 +54,21 @@ class Trie:
             pCrawl = pCrawl.children[index] 
   
         # mark last node as leaf 
+        pCrawl.string = key
         pCrawl.isEndOfWord = True
+
+    def search_update(self, letter, search_index):
+        pCrawl = self.search_nodes[search_index].pop() 
+        index = self._charToIndex(letter) 
+        if not pCrawl.children[index]: 
+            return ([], False, False)
+        pCrawl = pCrawl.children[index] 
+        self.search_nodes[search_index].append(pCrawl)
+        
+        return ([ pCrawl.string ], pCrawl.isEndOfWord, True) 
+        #return pCrawl != None and pCrawl.isEndOfWord 
+
+
 
     def search(self, key): 
           
@@ -66,62 +85,6 @@ class Trie:
   
         return pCrawl != None and pCrawl.isEndOfWord 
 
-    def search3(self, key): 
-          
-        # Search key in the trie 
-        # Returns true if key presents  
-        # in trie, else false 
-        length = len(key) 
-        zoekfront = [(self.root,0, "")]
-        res = []
-
-        while len(zoekfront) > 0:
-            zoek = zoekfront.pop(0)
-            pCrawl = zoek[0]
-            current = zoek[2] # huidig pad van string
-
-            for level in range(zoek[1], length): 
-                chars = [key[level], 'O','X']
-                pset = list(filter(None, [ pCrawl.children[self._charToIndex(c)] for c in chars ]))
-                n = pCrawl.children[index] 
-                if len(pset) == 0: 
-                    break
-
-                for i,p in enumerate(pset):
-                    if i ==0: pCrawl = p
-                    else: zoekfront.append(
-    
-            if pCrawl != None and pCrawl.isEndOfWord: res.append(current)
-
-    def search2(self, key, startnode = None): 
-        # Search key in the trie 
-        # Returns true if key presents  
-        # in trie, else false 
-        if startnode: pCrawl = startnode
-        else: pCrawl = self.root
-        length = len(key) 
-        for level in range(length): 
-            index = self._charToIndex(key[level]) 
-            #indices = [index, self._charToIndex('O'), self._charToIndex('X')] # o and x are wildcards and can be any letter in the protein we are searching
-            indices = [index]
-            indices_found = [ pCrawl.children[i] is not None for i in indices]
-            indices_true = sum(indices_found)
-            if indices_true == 0: return False
-            indices_to_check = np.where(indices_found)[0]
-            res = []
-
-            if indices_true == 1: 
-                pCrawl = pCrawl.children[indices[indices_to_check[0]]] 
-                #return self.search(key[level+1:], pCrawl.children[index])
-
-            else:
-                for ind in indices_to_check:
-                    res.append(self.search(key[level+1:], pCrawl.children[ind]))
-                    return res
-                
-        return pCrawl != None and pCrawl.isEndOfWord 
-
-  
 # driver function 
 def main(): 
   
