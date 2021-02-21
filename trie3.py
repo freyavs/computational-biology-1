@@ -58,14 +58,21 @@ class Trie:
         pCrawl.isEndOfWord = True
 
     def search_update(self, letter, search_index):
-        pCrawl = self.search_nodes[search_index].pop() 
-        index = self._charToIndex(letter) 
-        if not pCrawl.children[index]: 
-            return ([], False, False)
-        pCrawl = pCrawl.children[index] 
-        self.search_nodes[search_index].append(pCrawl)
-        
-        return ([ pCrawl.string ], pCrawl.isEndOfWord, True) 
+        new_search_nodes = []
+        results = []
+        while self.search_nodes[search_index]:
+            current_node = self.search_nodes[search_index].pop() 
+            
+            chars = [letter]
+            pset = list(filter(None, [ current_node.children[self._charToIndex(c)] for c in chars ]))
+            #if not pset: 
+            #    return ([], False)
+            new_search_nodes += pset 
+            results += [node.string for node in pset if node.string is not None ] 
+            
+        if not new_search_nodes: return ([], False)
+        self.search_nodes[search_index] = new_search_nodes
+        return (results, True) 
         #return pCrawl != None and pCrawl.isEndOfWord 
 
 

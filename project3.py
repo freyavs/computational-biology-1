@@ -60,17 +60,18 @@ def get_all_substring_combinations(s, l):
             dir_reverse = words.search_update(word[length-1-i], 1)[1]
             if dir_normal or dir_reverse:
                 for j in range(i+1, length + 1):
+                    #todo: check if i+1 can remove check, check if length+1 is necessary
                     if 1 < abs(i-j) < window_size:
 
                         if dir_normal:
                             r = words.search_update(word[j-1], 0)
-                            if r[1]: res.update(r[0])
-                            dir_normal = r[2]
+                            if r[0]: res.update(r[0])
+                            dir_normal = r[1]
 
                         if dir_reverse:
-                            r_reverse = words.search_update(word[length-1-j],1) 
-                            if r_reverse[1]: res.update(r_reverse[0])
-                            dir_reverse = r_reverse[2]
+                            r_reverse = words.search_update(word[length-j],1) 
+                            if r_reverse[0]: res.update(r_reverse[0])
+                            dir_reverse = r_reverse[1]
 
                         if not dir_normal and not dir_reverse: break 
                         
@@ -81,17 +82,18 @@ def get_all_letters(w,l):
     return l.union(set(w).intersection(wordss))
 
 
+data = SeqIO.parse('covid.fasta', 'fasta')
+for record in data:
+    print(len(get_all_combinations(record)))
+
+exit()
+
 combs = get_all_combinations("TESTBESTAND")
 print(combs)
 print(len(combs))
 exit()
 
 # tests
-data = SeqIO.parse('covid.fasta', 'fasta')
-for record in data:
-    print(get_all_combinations(record))
-
-exit()
 
 
 

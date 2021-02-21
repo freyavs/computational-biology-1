@@ -56,16 +56,12 @@ def get_all_substring_combinations(s, l):
 def get_all_letters(w,l):
     return l.union(set(w).intersection(words))
 
-combs = get_all_combinations("TESTBESTAND")
-print(combs)
-print(len(combs))
-exit()
+
 data = SeqIO.parse('covid.fasta', 'fasta')
 for record in data:
     print(len(get_all_combinations(record)))
 
 exit()
-
 
 combs = get_all_combinations("TESTBESTAND")
 print(combs)
