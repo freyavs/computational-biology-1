@@ -3,7 +3,7 @@ from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 import re
 from itertools import combinations
-from trie3 import *
+from dict_trie import *
 
 f = open("woordenboek.txt", "r")
 dictionary = f.read()

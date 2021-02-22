@@ -4,7 +4,8 @@ class TrieNode:
       
     # Trie node class 
     def __init__(self): 
-        self.children = [None]*26
+        #self.children = [None]*26
+        self.children = dict()
         self.string = None 
         # isEndOfWord is True if node represent the end of the word 
         self.isEndOfWord = False
@@ -25,19 +26,6 @@ class Trie:
         # Returns new trie node (initialized to NULLs) 
         return TrieNode() 
   
-    def _charToIndex(self,ch): 
-          
-        # private helper function 
-        # Converts key current character into index 
-        # use only 'a' through 'z' and lower case 
-        if ch == 'J':
-            return ord('I') - ord('A')
-        if ch == 'U': 
-            return ord('V') - ord('A')
-
-        return ord(ch)-ord('A') 
-  
-  
     def insert(self,key): 
           
         # If not present, inserts key into trie 
@@ -46,10 +34,10 @@ class Trie:
         pCrawl = self.root 
         length = len(key) 
         for level in range(length): 
-            index = self._charToIndex(key[level]) 
-  
+            #index = self._charToIndex(key[level]) 
+            index = key[level]
             # if current character is not present 
-            if not pCrawl.children[index]: 
+            if not pCrawl.children.get(index, None): 
                 pCrawl.children[index] = self.getNode() 
             pCrawl = pCrawl.children[index] 
   
@@ -58,16 +46,27 @@ class Trie:
         pCrawl.isEndOfWord = True
 
     def search_update(self, letter, search_index):
+        special_chars = { 
+            'N': ['N', 'B'],
+            'D': ['D', 'B'],
+            'Q': ['Q', 'Z'],
+            'E': ['E', 'Z'],
+            'J': ['I'],    
+            'U': ['V']
+        }    
+                        
         new_search_nodes = []
         results = []
         while self.search_nodes[search_index]:
             current_node = self.search_nodes[search_index].pop() 
-            extra = []
-            if letter == 'N' or letter == 'D': extra = ['B']
-            if letter == 'Q' or letter == 'E': extra = ['Z']
+            #extra = []
+            #if letter == 'N' or letter == 'D': extra = ['B']
+            #if letter == 'Q' or letter == 'E': extra = ['Z']
 
-            chars = [letter, 'X', 'O'] + extra
-            pset = list(filter(None, [ current_node.children[self._charToIndex(c)] for c in chars ]))
+            chars = ['X', 'O'] + special_chars.get(letter, [letter]) 
+            #chars = [ letter ]
+            #pset = list(filter(None, [ current_node.children[self._charToIndex(c)] for c in chars ]))
+            pset = list(filter(None, [ current_node.children.get(c,None) for c in chars ]))
             #if not pset: 
             #    return ([], False)
             new_search_nodes += pset 
@@ -94,31 +93,3 @@ class Trie:
             pCrawl = pCrawl.children[index] 
   
         return pCrawl != None and pCrawl.isEndOfWord 
-
-# driver function 
-def main(): 
-  
-    # Input keys (use only 'a' through 'z' and lower case) 
-    keys = ["the","a","there","anaswe","any", 
-            "by","their"] 
-    output = ["Not present in trie", 
-              "Present in trie"] 
-  
-    # Trie object 
-    t = Trie() 
-  
-    # Construct trie 
-    for key in keys: 
-        t.insert(key) 
-  
-    # Search for different keys 
-    print("{} ---- {}".format("the",output[t.search("the")])) 
-    print("{} ---- {}".format("th",output[t.search("th")])) 
-    print("{} ---- {}".format("these",output[t.search("these")])) 
-    print("{} ---- {}".format("their",output[t.search("their")])) 
-    print("{} ---- {}".format("thaw",output[t.search("thaw")])) 
-  
-if __name__ == '__main__': 
-    main() 
-  
-# This code is contributed by Atul Kumar (www.facebook.com/atul.kr.007) 
