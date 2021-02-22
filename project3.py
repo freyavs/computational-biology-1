@@ -82,17 +82,18 @@ def get_all_letters(w,l):
     return l.union(set(w).intersection(wordss))
 
 
+
 data = SeqIO.parse('covid.fasta', 'fasta')
 for record in data:
     print(len(get_all_combinations(record)))
 
 exit()
 
-combs = get_all_combinations("TESTBESTAND")
+combs = get_all_combinations("TESTEIWIT")
 print(combs)
-print(len(combs))
+combs = get_all_combinations("TQEQSQTQEQIQWQIQT")
+print(combs)
 exit()
-
 # tests
 
 

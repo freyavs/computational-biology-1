@@ -30,10 +30,10 @@ class Trie:
         # private helper function 
         # Converts key current character into index 
         # use only 'a' through 'z' and lower case 
-        #if ch == 'J':
-            #return ord('I') - ord('A')
-        #if ch == 'U': 
-            #return ord('V') - ord('A')
+        if ch == 'J':
+            return ord('I') - ord('A')
+        if ch == 'U': 
+            return ord('V') - ord('A')
 
         return ord(ch)-ord('A') 
   
@@ -62,8 +62,11 @@ class Trie:
         results = []
         while self.search_nodes[search_index]:
             current_node = self.search_nodes[search_index].pop() 
-            
-            chars = [letter]
+            extra = []
+            if letter == 'N' or letter == 'D': extra = ['B']
+            if letter == 'Q' or letter == 'E': extra = ['Z']
+
+            chars = [letter, 'X', 'O'] + extra
             pset = list(filter(None, [ current_node.children[self._charToIndex(c)] for c in chars ]))
             #if not pset: 
             #    return ([], False)
