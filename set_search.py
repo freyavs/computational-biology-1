@@ -4,7 +4,7 @@ from Bio.SeqRecord import SeqRecord
 import re
 from itertools import combinations
 
-f = open("woordenboek.txt", "r")
+f = open("data/woordenboek.txt", "r")
 dictionary = f.read()
 dictionary = dictionary.split('\n')
 f.close()
@@ -57,7 +57,7 @@ def get_all_letters(w,l):
     return l.union(set(w).intersection(words))
 
 
-data = SeqIO.parse('covid.fasta', 'fasta')
+data = SeqIO.parse('data/covid.fasta', 'fasta')
 for record in data:
     print(len(get_all_combinations(record)))
 

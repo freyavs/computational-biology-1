@@ -5,7 +5,7 @@ import re
 from itertools import combinations
 from dict_trie import *
 
-f = open("woordenboek.txt", "r")
+f = open("data/woordenboek.txt", "r")
 dictionary = f.read()
 dictionary = dictionary.split('\n')
 f.close()
@@ -20,18 +20,11 @@ for word in dictionary:
         wordss.add(word.upper())
         window_size = max(window_size, len(word))
 
-print(" words ready ")
-
 def fix_args(f):
     def aangepast(*args, **kwargs):
         new_args = [ SeqRecord(Seq(arg)) if isinstance(arg, str) else arg for arg in args ]
         return f(*new_args, **kwargs)
     return aangepast
-
-@fix_args
-def get_all_combinations2(s):
-    s = str(s.seq)
-    res = set()
 
 
 @fix_args
@@ -76,6 +69,7 @@ def get_all_substring_combinations(s, l):
                         if not dir_normal and not dir_reverse: break 
                         
     
+    #return res
     return get_all_letters(s, res)
 
 def get_all_letters(w,l):
@@ -83,10 +77,24 @@ def get_all_letters(w,l):
 
 
 
-data = SeqIO.parse('covid.fasta', 'fasta')
-for record in data:
-    print(len(get_all_combinations(record)))
+data = SeqIO.parse('data/covid.fasta', 'fasta')
+for i, record in enumerate(data):
+    combs = get_all_combinations(record)
+    print(len(combs))
 
+
+f.close()
+    
+
+data = SeqIO.parse('data/covid.fasta', 'fasta')
+print(data)
+for i, record in enumerate(data):
+    f = open(f"outputs/eiwit_{i}.txt", "w+")
+    combs = list(get_all_combinations(record))
+    for c in sorted(combs):
+        f.write(f'{c}\n')
+    f.close()
+    
 exit()
 
 combs = get_all_combinations("TESTEIWIT")
