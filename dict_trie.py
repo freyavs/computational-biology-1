@@ -55,14 +55,3 @@ class Trie:
         self.search_nodes[search_index].append(current)
         
         return ([ current.string ], True) 
-
-    def search(self, key): 
-        pCrawl = self.root 
-        length = len(key) 
-        for level in range(length): 
-            letter = key[level]
-            if not pCrawl.children.get(letter, None): 
-                return False
-            pCrawl = pCrawl.children[letter] 
-  
-        return pCrawl != None and pCrawl.string 

@@ -35,17 +35,15 @@ def get_all_combinations(data):
     count = 0
     for i in range(2,max_jump):
         for start_index in range(i):
-            #count += 1
             string = data[start_index::i]
+            #sla deze op in een set zodat je al een groot deel duplicaten weghaald
             if len(string) > 1: 
                 res.add(string)
 
-    #print(f'totaal: {count}\n')
     return res 
 
 def get_all_substring_combinations(s, l, words, max_len):
     res = set()
-    #print(f'in set: {len(l)}\n')
     for word in l:
         length = len(word)
         for i in range(length):
@@ -65,8 +63,8 @@ def get_all_substring_combinations(s, l, words, max_len):
                             if r_reverse[0]: res.update(r_reverse[0])
                             dir_reverse = r_reverse[1]
 
+                        # als in geen van beide nog gezogd kan worden
                         if not dir_normal and not dir_reverse: break 
-    words.reset()
 
     # letters appart behandelen, die kunnen snel door in de speciale karakters te zoeken
     for letter in set(s):
@@ -82,7 +80,9 @@ if __name__ == "__main__":
 
     data = SeqIO.parse(sys.argv[2], 'fasta')
     for record in data:
-        print(record.name)
+        print(f">{record.name}")
         combs = get_all_combinations(record)
         res = get_all_substring_combinations(record, combs, trie, max_length)
-        print(len(res))
+        res = sorted(list(res))
+        for word in res:
+            print(word)
