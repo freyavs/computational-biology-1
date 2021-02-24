@@ -3,21 +3,25 @@ from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 import re
 from itertools import combinations
+import sys
+from dict_trie import *
 
-f = open("data/woordenboek.txt", "r")
-dictionary = f.read()
-dictionary = dictionary.split('\n')
-f.close()
 
-dictionary = [ word.upper() for word in dictionary]
+#dit geeft niet de gevraagde output want dit was gewoon een probeersel
 
-words = set() 
-window_size = 0
-for word in dictionary:
-    # als het woord nummers of spaties heeft, kan het zeker niet in het aminozuur voorkomen
-    if re.match('^[a-zA-Z]+$', word):
-        words.add(word.upper())
-        window_size = max(window_size, len(word))
+def get_set(dict_file):
+    f = open(dict_file, "r")
+    dictionary = ( word.upper() for word in f.read().split('\n') )
+    f.close()
+    words = set() 
+    max_len = 0
+    for word in dictionary:
+        # als het woord nummers of spaties heeft, kan het zeker niet in het aminozuur voorkomen
+        if re.match('^[A-Z]+$', word):
+            words.add(word)
+            max_len = max(max_len, len(word))
+
+    return words, max_len
 
 def fix_args(f):
     def aangepast(*args, **kwargs):
@@ -38,34 +42,28 @@ def get_all_combinations(s):
             if len(string) > 1: 
                 res.add(string)
 
-    r = get_all_substring_combinations(s, res)
-    return r
+    return res
 
-def get_all_substring_combinations(s, l):
+def get_all_substring_combinations(s, l, words, max_len):
     res = set()
     for word in l:
         # get all substrings that are not length 1
         substrings = (word[x:y] for x, y in combinations( 
-            range(len(word) + 1), r = 2) if 1 < abs(x-y) < window_size)
+            range(len(word) + 1), r = 2) if 1 < abs(x-y) < max_len)
         for w in substrings:
             if w in words: res.add(w)
             if w[::-1] in words: res.add(w[::-1])  
-    
-    return get_all_letters(s, res)
 
-def get_all_letters(w,l):
-    return l.union(set(w).intersection(words))
+    # voeg letters appart toe 
+    res.update(set(s).intersection(words))
+    return res 
 
+if __name__ == "__main__":
+    words, max_length = get_set(sys.argv[1]) 
 
-data = SeqIO.parse('data/covid.fasta', 'fasta')
-for record in data:
-    print(len(get_all_combinations(record)))
-
-exit()
-
-combs = get_all_combinations("TESTBESTAND")
-print(combs)
-print(len(combs))
-exit()
-
-#erge rna gif
+    data = SeqIO.parse(sys.argv[2], 'fasta')
+    for record in data:
+        print(record.name)
+        combs = get_all_combinations(record)
+        res = get_all_substring_combinations(record, combs, words, max_length)
+        print(len(res))

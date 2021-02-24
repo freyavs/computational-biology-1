@@ -27,7 +27,7 @@ class Trie:
         return ord(ch)-ord('A') 
   
   
-    def insert(self,key): 
+    def add(self,key): 
         pCrawl = self.root 
         length = len(key) 
         for level in range(length): 
@@ -38,7 +38,7 @@ class Trie:
   
         pCrawl.string = key
 
-    def search_update(self, letter, search_index):
+    def find_update(self, letter, search_index):
         new_search_nodes = []
         results = []
         search = self.search_nodes[search_index]
@@ -54,7 +54,6 @@ class Trie:
         self.search_nodes[search_index] = new_search_nodes
         return (results, True) 
 
-
     def search(self, key): 
         pCrawl = self.root 
         length = len(key) 
@@ -64,4 +63,4 @@ class Trie:
                 return False
             pCrawl = pCrawl.children[index] 
   
-        return pCrawl != None and pCrawl.isEndOfWord 
+        return pCrawl != None and pCrawl.string 
